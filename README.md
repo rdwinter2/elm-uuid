@@ -1,3 +1,7 @@
+> ⚠️ This is a fork of https://github.com/Zinggi/elm-uuid ⚠️
+> We do not plan to continue general maintainance of the package and are
+> only publishing it for the purpose of finishing our Elm 0.19 upgrade.
+
 # Elm Uuid
 **This is a Fork** from [danyx23/elm-uuid](https://github.com/danyx23/elm-uuid).
 It uses the [PCG-extended](http://package.elm-lang.org/packages/Zinggi/elm-random-pcg-extended/latest) PRNG to [provide enough randomness when generating UUIDs on different clients](https://github.com/danyx23/elm-uuid/issues/10).

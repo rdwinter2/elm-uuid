@@ -1,11 +1,11 @@
-module Uuid.Barebones exposing (toUuidString, isValidUuid)
+module Uuid.Barebones exposing (isValidUuid, toUuidString)
 
-import String
-import List
 import Array
-import Char
-import Regex
 import Bitwise
+import Char
+import List
+import Regex
+import String
 
 
 {-| Verification function to check if the given string is a valid Uuid in the canonical
@@ -26,17 +26,17 @@ xxxxxxxx-xxxx-4xxx-Yxxx-xxxxxxxxxxxx
 toUuidString : List Int -> String
 toUuidString thirtyOneHexDigits =
     String.concat
-        [ thirtyOneHexDigits |> List.take 8 |> (List.map mapToHex) |> String.fromList
+        [ thirtyOneHexDigits |> List.take 8 |> List.map mapToHex |> String.fromList
         , "-"
-        , thirtyOneHexDigits |> List.drop 8 |> List.take 4 |> (List.map mapToHex) |> String.fromList
+        , thirtyOneHexDigits |> List.drop 8 |> List.take 4 |> List.map mapToHex |> String.fromList
         , "-"
         , "4"
-        , thirtyOneHexDigits |> List.drop 12 |> List.take 3 |> (List.map mapToHex) |> String.fromList
+        , thirtyOneHexDigits |> List.drop 12 |> List.take 3 |> List.map mapToHex |> String.fromList
         , "-"
-        , thirtyOneHexDigits |> List.drop 15 |> List.take 1 |> (List.map limitDigitRange8ToB) |> (List.map mapToHex) |> String.fromList
-        , thirtyOneHexDigits |> List.drop 16 |> List.take 3 |> (List.map mapToHex) |> String.fromList
+        , thirtyOneHexDigits |> List.drop 15 |> List.take 1 |> List.map limitDigitRange8ToB |> List.map mapToHex |> String.fromList
+        , thirtyOneHexDigits |> List.drop 16 |> List.take 3 |> List.map mapToHex |> String.fromList
         , "-"
-        , thirtyOneHexDigits |> List.drop 19 |> List.take 12 |> (List.map mapToHex) |> String.fromList
+        , thirtyOneHexDigits |> List.drop 19 |> List.take 12 |> List.map mapToHex |> String.fromList
         ]
 
 
@@ -47,7 +47,8 @@ limitDigitRange8ToB digit =
 
 uuidRegex : Regex.Regex
 uuidRegex =
-    Regex.regex "^[0-9A-Fa-f]{8,8}-[0-9A-Fa-f]{4,4}-[1-5][0-9A-Fa-f]{3,3}-[8-9A-Ba-b][0-9A-Fa-f]{3,3}-[0-9A-Fa-f]{12,12}$"
+    Regex.fromString "^[0-9A-Fa-f]{8,8}-[0-9A-Fa-f]{4,4}-[1-5][0-9A-Fa-f]{3,3}-[8-9A-Ba-b][0-9A-Fa-f]{3,3}-[0-9A-Fa-f]{12,12}$"
+        |> Maybe.withDefault Regex.never
 
 
 hexDigits : Array.Array Char
@@ -56,9 +57,9 @@ hexDigits =
         mapChars offset digit =
             Char.fromCode <| digit + offset
     in
-        (List.map (mapChars 48) (List.range 0 9))
-            ++ (List.map (mapChars 97) (List.range 0 5))
-            |> Array.fromList
+    List.map (mapChars 48) (List.range 0 9)
+        ++ List.map (mapChars 97) (List.range 0 5)
+        |> Array.fromList
 
 
 {-| Map an integer in the range 0-15 to a hexadecimal character
@@ -67,11 +68,11 @@ mapToHex : Int -> Char
 mapToHex index =
     let
         maybeResult =
-            (flip Array.get <| hexDigits) index
+            Array.get index hexDigits
     in
-        case maybeResult of
-            Nothing ->
-                'x'
+    case maybeResult of
+        Nothing ->
+            'x'
 
-            Just result ->
-                result
+        Just result ->
+            result

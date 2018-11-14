@@ -1,4 +1,7 @@
-module Uuid exposing (Uuid, toString, fromString, generator, stringGenerator, encode, decoder, isValidUuid)
+module Uuid exposing
+    ( Uuid, generator, fromString, toString, encode, decoder
+    , stringGenerator, isValidUuid
+    )
 
 {-| This modules provides an opaque type for Uuids, helpers to serialize
 from and to String and helpers to generate new Uuids using the
@@ -42,11 +45,11 @@ Have a look at the examples in the package to see how to use it!
 
 -}
 
-import Random.Pcg.Extended exposing (Generator, map, list, int, step, Seed)
-import String
-import Uuid.Barebones exposing (..)
 import Json.Decode as JD
 import Json.Encode as JE
+import Random.Pcg.Extended exposing (Generator, Seed, int, list, map, step)
+import String
+import Uuid.Barebones exposing (..)
 
 
 {-| Uuid type. Represents a 128 bit Uuid (Version 4)
@@ -71,6 +74,7 @@ fromString : String -> Maybe Uuid
 fromString text =
     if isValidUuid text then
         Just <| Uuid <| String.toLower text
+
     else
         Nothing
 

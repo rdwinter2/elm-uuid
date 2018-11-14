@@ -1,21 +1,21 @@
-module Tests exposing (..)
+module Tests exposing (all, buildUuid, initialSeedFuzzer, randomInt, uuidFuzzer)
 
 --import Check exposing (claim, claimTrue, that, is, true, false, for, quickCheck)
 --import Check.Test exposing (evidenceToTest)
 
-import Test exposing (..)
-import String
 import Expect
-import Uuid exposing (..)
-import Random.Pcg.Extended as RandomE
-import Random.Pcg as RandomP
 import Fuzz
+import Random
+import Random.Pcg.Extended as RandomE
 import Shrink
+import String
+import Test exposing (..)
+import Uuid exposing (..)
 
 
-randomInt : RandomP.Generator Int
+randomInt : Random.Generator Int
 randomInt =
-    RandomP.int RandomP.minInt RandomP.maxInt
+    Random.int RandomE.minInt RandomE.maxInt
 
 
 buildUuid : Int -> Uuid
@@ -27,19 +27,19 @@ buildUuid integer =
         ( uuid, seed ) =
             RandomE.step generator initialSeed
     in
-        uuid
+    uuid
 
 
 initialSeedFuzzer : Fuzz.Fuzzer RandomE.Seed
 initialSeedFuzzer =
     Fuzz.custom
-        (randomInt |> RandomP.map (\x -> RandomE.initialSeed x []))
+        (Random.map (\x -> RandomE.initialSeed x []) randomInt)
         Shrink.noShrink
 
 
 uuidFuzzer : Fuzz.Fuzzer Uuid
 uuidFuzzer =
-    Fuzz.custom (randomInt |> RandomP.map buildUuid) Shrink.noShrink
+    Fuzz.custom (Random.map buildUuid randomInt) Shrink.noShrink
 
 
 all : Test
@@ -61,10 +61,10 @@ all =
                     ( uuid, nextSeed ) =
                         RandomE.step generator initialSeed
                 in
-                    uuid
-                        |> Uuid.toString
-                        |> isValidUuid
-                        |> Expect.true "should be valid uuid"
+                uuid
+                    |> Uuid.toString
+                    |> isValidUuid
+                    |> Expect.true "should be valid uuid"
         , fuzz initialSeedFuzzer "generate two uuids" <|
             \initialSeed ->
                 let
@@ -74,7 +74,7 @@ all =
                     ( uuid2, seed2 ) =
                         RandomE.step generator seed1
                 in
-                    Expect.notEqual uuid1 uuid2
+                Expect.notEqual uuid1 uuid2
         , fuzz uuidFuzzer "roundtripping uuid through toString -> fromString keeps the Uuids intact" <|
             \uuid ->
                 uuid

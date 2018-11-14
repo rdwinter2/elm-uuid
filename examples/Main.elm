@@ -1,9 +1,11 @@
 module Main exposing (main)
 
-import Uuid
-import Random.Pcg.Extended exposing (Seed, initialSeed, step)
-import Html exposing (Html, div, button, text, programWithFlags)
+import Browser
+import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
+import Random.Pcg.Extended exposing (Seed, initialSeed, step)
+import Uuid
+
 
 
 -- 1.: In your elm code, store the seed and update it every time you create a new Uuid
@@ -27,13 +29,13 @@ update msg model =
                 ( newUuid, newSeed ) =
                     step Uuid.generator model.currentSeed
             in
-                -- 2.: Store the new seed
-                ( { model
-                    | currentUuid = Just newUuid
-                    , currentSeed = newSeed
-                  }
-                , Cmd.none
-                )
+            -- 2.: Store the new seed
+            ( { model
+                | currentUuid = Just newUuid
+                , currentSeed = newSeed
+              }
+            , Cmd.none
+            )
 
 
 view : Model -> Html Msg
@@ -47,10 +49,10 @@ view model =
                 Just uuid ->
                     "Current Uuid: " ++ Uuid.toString uuid
     in
-        div []
-            [ button [ onClick NewUuid ] [ text "Create a new Uuid!" ]
-            , text uuidText
-            ]
+    div []
+        [ button [ onClick NewUuid ] [ text "Create a new Uuid!" ]
+        , text uuidText
+        ]
 
 
 {-| 3.: To get enough bytes of randomness (128 bit), we have to pass at least 4 32-bit ints from JavaScript
@@ -68,7 +70,7 @@ init ( seed, seedExtension ) =
 
 main : Program ( Int, List Int ) Model Msg
 main =
-    programWithFlags
+    Browser.element
         { init = init
         , update = update
         , view = view
