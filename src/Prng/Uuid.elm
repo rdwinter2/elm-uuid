@@ -1,4 +1,4 @@
-module Uuid exposing
+module Prng.Uuid exposing
     ( Uuid, generator, fromString, toString, encode, decoder
     , stringGenerator, isValidUuid
     )
@@ -47,9 +47,9 @@ Have a look at the examples in the package to see how to use it!
 
 import Json.Decode as JD
 import Json.Encode as JE
+import Prng.Uuid.Barebones as Barebones exposing (..)
 import Random.Pcg.Extended exposing (Generator, Seed, int, list, map, step)
 import String
-import Uuid.Barebones exposing (..)
 
 
 {-| Uuid type. Represents a 128 bit Uuid (Version 4)
@@ -126,7 +126,7 @@ stringGenerator =
 -}
 isValidUuid : String -> Bool
 isValidUuid =
-    Uuid.Barebones.isValidUuid
+    Barebones.isValidUuid
 
 
 

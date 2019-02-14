@@ -5,12 +5,12 @@ module Tests exposing (all, buildUuid, initialSeedFuzzer, randomInt, uuidFuzzer)
 
 import Expect
 import Fuzz
+import Prng.Uuid as Uuid exposing (..)
 import Random
 import Random.Pcg.Extended as RandomE
 import Shrink
 import String
 import Test exposing (..)
-import Uuid exposing (..)
 
 
 randomInt : Random.Generator Int
