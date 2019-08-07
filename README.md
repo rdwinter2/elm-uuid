@@ -24,3 +24,6 @@ Check out the [example](https://github.com/Zinggi/elm-uuid/tree/master/examples)
 
 
 Package originally by Daniel Bachler
+
+
+~/node_modules/elm-live/bin/elm-live.js examples/Main.elm -- --output=elm.js
